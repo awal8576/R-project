@@ -1,0 +1,35 @@
+---
+title: "Weather Report"
+output: word_document
+params:
+  summary_data: summary_table
+  plot: timeplot
+  sites_filter: "sites"
+  sites: "sites"
+  weather_var: "Air Temperature"
+  agg: "Hourly - raw values"
+  
+---
+
+```{r summarydata, echo=FALSE}
+library(knitr)
+#print(params$summary_data)
+kable(params$summary_data)
+```
+
+## Including Plots
+Plot of `r params$agg` for  `r params$weather_var` for sites: `r params$sites` 
+```{r timeplot, echo=FALSE}
+params$plot
+```
+
+Location of selected weather stations (`r params$sites`)
+```{r plot, echo=FALSE}
+sites <- read.csv("./data/Sites.csv")
+maps::map("world","UK")
+sel_coords <- sites %>%
+  filter(Site_ID %in% params$sites_filter)
+points(sel_coords$Longitude, sel_coords$Latitude, pch=16, col="red")
+
+```
+
